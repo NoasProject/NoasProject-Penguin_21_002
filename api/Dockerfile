@@ -1,16 +1,17 @@
-FROM ruby:2.7.0
+FROM ruby:2.6.6
 
-RUN apt-get update -qq && \
-    apt-get install -y build-essential \ 
-    libpq-dev \        
-    nodejs \
-    && rm -rf /var/lib/apt/lists/* 
+RUN apt-get update -qq && apt-get -y install \
+    build-essential \
+    libpq-dev \
+    default-mysql-client \
+    nodejs 
 
 RUN mkdir /app
-ENV APP_ROOT /app
-WORKDIR $APP_ROOT
+WORKDIR /app
+COPY Gemfile /app
+COPY Gemfile.lock /app
 
-ADD ./Gemfile $APP_ROOT/Gemfile
-ADD ./Gemfile.lock $APP_ROOT/Gemfile.lock
+RUN gem install bundler && bundle install
+COPY . /app
 
-RUN bundle install
+EXPOSE 3000
