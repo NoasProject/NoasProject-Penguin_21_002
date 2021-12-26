@@ -3,7 +3,8 @@ version: '3'
 services:
   web:
     build: ./api
-    command: bundle exec rails s -p 3001 -b '0.0.0.0'
+    command: /bin/bash -c "rm -f /app/tmp/pids/server.pid && bundle exec rails s -b
+      0.0.0.0"
     ports:
       - '3001:3001'
     depends_on:
@@ -26,7 +27,7 @@ services:
     volumes:
       - ./front:/app
     ports:
-      - '3002:3002'
+      - '9090:8080'
     tty: true
     stdin_open: true
     command: npm run serve
