@@ -35,34 +35,7 @@ export default {
   props: {},
   methods: {
     // ログイン処理
-    onLogin: function () {
-      var p = {
-        name: this.login.name,
-        login_id: this.login.id,
-        login_password: this.login.password,
-      };
-
-      this.axios
-        .post("http://localhost:3000/users/login", p)
-        .then((response) => {
-          var payload = response.data;
-          console.log(payload);
-          this.login.token = payload.login_token;
-          if (this.login.token == "" || this.login.token == undefined) {
-            return;
-          }
-          this.$cookies.set("login-token", this.login.token, { expires: 5 });
-          this.toTodos();
-        })
-        .catch((e) => {
-          alert(e);
-        });
-    },
-
-    // TODOページへ遷移を行う
-    toTodos: function () {
-      this.$router.push("/todos");
-    },
+    onLogin: function () {},
   },
 };
 </script>
