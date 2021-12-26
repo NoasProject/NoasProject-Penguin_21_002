@@ -1,5 +1,11 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+
+import Login from "./components/Login/Login.vue"
+import Accountregister from "./components/Accountregister/Accountregister.vue"
+import Top from "./components/Top/Top.vue"
+import Profile from "./components/Profile/Profile.vue"
+
 //
 // 他のコンポーネントは省略
 //
@@ -15,9 +21,9 @@ const routes = [
     },
     // 登録
     {
-        path: "/register",
-        name: "register",
-        component: AccountRegister,
+        path: "/accountRegister",
+        name: "accountRegister",
+        component: Accountregister,
     },
     // トップページ
     {
