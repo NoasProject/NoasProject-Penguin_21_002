@@ -71,3 +71,10 @@ https://012-jp.vuejs.org/guide/
 npm install --save axios
 npm install --save vue-axios
 ```
+
+```
+# db設計？
+
+rails g scaffold 
+
+```
