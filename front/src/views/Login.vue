@@ -2,14 +2,16 @@
   <div>
     <form v-on:submit.prevent>
       <p>
-        <label for="login_id">ログインID</label>
-        <input type="text" v-model="login.id" />
+        <!-- <div class="form-login-id"> -->
+          <label for="login_id">ログインID</label>
+          <input type="text" v-model="login.id"/>
+        <!-- </div> -->
       <br>
         <label for="password">ログインパスワード</label>
         <input type="text" v-model="login.password" />
       <br>
       <!-- タイトルだけは必須入力 -->
-      <b-button :disabled="login.id == '' || login.password == ''" variant="success" style="width:30%;" v-on:click="onLogin()">
+      <b-button :disabled="login.id == '' || login.password == ''" variant="success" style="width:100%;" v-on:click="onLogin()">
         ログイン
       </b-button>
       </p>

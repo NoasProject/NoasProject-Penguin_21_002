@@ -1,10 +1,10 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
-import Login from "./components/Login/Login.vue"
-import Accountregister from "./components/Accountregister/Accountregister.vue"
-import Top from "./components/Top/Top.vue"
-import Profile from "./components/Profile/Profile.vue"
+import Login from "./views/Login.vue"
+import Accountregister from "./views/Accountregister.vue"
+import Top from "./views/Top.vue"
+import Profile from "./views/Profile.vue"
 
 //
 // 他のコンポーネントは省略
