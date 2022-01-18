@@ -1,5 +1,6 @@
 class LikesController < ApplicationController
   before_action :set_like, only: [:show, :update, :destroy]
+  before_action :authenticate_v1_user!
 
   # GET /likes
   def index
@@ -35,17 +36,19 @@ class LikesController < ApplicationController
 
   # DELETE /likes/1
   def destroy
+    if (@like)
     @like.destroy
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_like
-      @like = Like.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def like_params
-      params.require(:like).permit(:tweet_id, :user_id)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_like
+    @like = Like.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def like_params
+    params.require(:like).permit(:tweet_id, :user_id)
+  end
 end

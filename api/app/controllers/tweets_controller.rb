@@ -1,10 +1,12 @@
 class TweetsController < ApplicationController
   before_action :set_tweet, only: [:show, :update, :destroy]
+  before_action :authenticate_v1_user!
 
   # GET /tweets
   def index
+    # @tweets = Tweet.where(user_id: @user.id)
     @tweets = Tweet.all
-
+    # left_outer_joins(:user_profile)
     render json: @tweets
   end
 
@@ -39,13 +41,14 @@ class TweetsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_tweet
-      @tweet = Tweet.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def tweet_params
-      params.require(:tweet).permit(:user_id, :content)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_tweet
+    @tweet = Tweet.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def tweet_params
+    params.require(:tweet).permit(:user_id, :content)
+  end
 end

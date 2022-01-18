@@ -15,7 +15,7 @@ Vue.use(VueRouter);
 const routes = [
     // ログインページ
     {
-        path: "/login",
+        path: "",
         name: "login",
         component: Login,
     },
@@ -44,7 +44,6 @@ const router = new VueRouter(
         // デフォルトの挙動では URL に `#` が含まれる.
         // URL から hash を取り除くには `mode:history` を指定する
         mode: "history",
-        // base: process.env.BASE_URL,
         routes: routes,
     }
 );

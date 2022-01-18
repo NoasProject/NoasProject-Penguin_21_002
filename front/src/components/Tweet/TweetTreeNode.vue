@@ -1,27 +1,31 @@
 <template>
   <div class="border border-primary">
-    <div class="container-fluid mt-3">
-    <p>{{ tweet.user.name }}({{ tweet.user.id }})</p>
-    </div>
+    <p>{{ tweet.profile ? tweet.profile.name : "NoName" }}({{ tweet.user_id }})</p>
     <label>{{ tweet.content }}</label>
     <br>
     <label>{{ tweet.created_at }}</label>
     <b-row>
         <div class="d-inline p-2 bg-primary text-white">
-            <b-img src=images.comment></b-img>
+            <b-img :src=images.comment></b-img>
             <label>{{ tweet.comments.length }}</label>
         </div>
         <div class="d-inline p-2 bg-primary text-white">
-            <b-img src=images.like v-on:click="onClickFav()"></b-img>
-            <label v-on:click="onClickFavDescription()">{{ tweet.likes.length }}</label>
+            <b-img :src=images.like v-on:click="onClickLike()"></b-img>
+            <label data-bs-toggle="modal" data-bs-target="#exampleModal">{{ tweet.likes.length }}</label>
         </div>
     </b-row>
+
   </div>
+
+
 </template>
 
 <script>
 export default {
-  created() {},
+  created() {
+    this.isLike = false;
+    // tweet.likes.find((f) => f.user_id == this.user_id) != undefined;
+  },
   props: {
     loginToken: String,
     tweet: Object,
@@ -29,8 +33,11 @@ export default {
   mounted() {},
   data() {
     return {
+      isLike: false,
+      user_id: this.$cookies.isKey("user_id"),
       images: {
         like: require("@/assets/like_32.png"),
+        // どっちかはbootstrapのアイコンを使う
         comment: require("@/assets/comment_32.png"),
       },
     };
@@ -38,18 +45,47 @@ export default {
   methods: {
     // お気に入り登録
     onClickLike: function () {
-      var p = {
-        tweet_id: this.tweet.id,
-      };
+      // いいね済みの場合
+      if (this.isLike) {
+        // 解除する
+        this.axios
+          .delete("http://localhost:3002/likes", {
+            params: {
+              tweet_id: this.tweet.id,
+            },
+            headers: {
+              uid: this.$cookies.get("uid"),
+              "access-token": this.$cookies.get("access-token"),
+              client: this.$cookies.get("client"),
+            },
+          })
+          .then(() => {
+            // var payload = response.data;
+          })
+          .catch((e) => {
+            alert(e);
+          });
+      } else {
+        // 登録する
+        this.axios
+          .post("http://localhost:3002/likes", {
+            params: {
+              tweet_id: this.tweet.id,
+            },
+            headers: {
+              uid: this.$cookies.get("uid"),
+              "access-token": this.$cookies.get("access-token"),
+              client: this.$cookies.get("client"),
+            },
+          })
+          .then(() => {
+            // var payload = response.data;
+          })
+          .catch((e) => {
+            alert(e);
+          });
+      }
 
-      this.axios
-        .post("http://localhost:3000/like", p)
-        .then((response) => {
-          var payload = response.data;
-        })
-        .catch((e) => {
-          alert(e);
-        });
       console.log(`Fav Request : ${this.tweet.id}`);
     },
 

@@ -1,13 +1,13 @@
 <template>
-  <div>
-    <tr v-for="tweet in tweets" v-bind:key="tweet.id">
+  <b-row>
+    <b-col cols="12" v-for="tweet in tweets" v-bind:key="tweet.id">
         <Node 
           ref="Node"
           :tweet="tweet"
         >
         </Node>
-    </tr>
-  </div>
+    </b-col>
+  </b-row>
 </template>
 
 <script>

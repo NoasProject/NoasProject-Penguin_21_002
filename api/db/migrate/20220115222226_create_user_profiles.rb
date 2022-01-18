@@ -1,6 +1,6 @@
-class CreateUsers < ActiveRecord::Migration[6.0]
+class CreateUserProfiles < ActiveRecord::Migration[6.0]
   def change
-    create_table :users do |t|
+    create_table :user_profiles do |t|
       t.string :name
       t.string :description
 
