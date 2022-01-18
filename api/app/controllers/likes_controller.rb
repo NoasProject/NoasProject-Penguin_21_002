@@ -36,7 +36,6 @@ class LikesController < ApplicationController
 
   # DELETE /likes/1
   def destroy
-    if (@like)
     @like.destroy
   end
 
