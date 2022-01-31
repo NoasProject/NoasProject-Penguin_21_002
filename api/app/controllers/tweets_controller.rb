@@ -1,6 +1,7 @@
 class TweetsController < ApplicationController
   before_action :set_tweet, only: [:show, :update, :destroy]
   before_action :authenticate_v1_user!
+  before_action :get_user
 
   # GET /tweets
   def index
@@ -49,6 +50,6 @@ class TweetsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def tweet_params
-    params.require(:tweet).permit(:user_id, :content)
+    params.require(:tweet).permit(:content).merge(user_id: @user_id)
   end
 end

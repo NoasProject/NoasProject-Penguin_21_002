@@ -29,7 +29,7 @@ export default {
       register: {
         id: "",
         password: "",
-        name: undefined,
+        name: "NoName",
         token: undefined,
       },
     };
@@ -37,30 +37,43 @@ export default {
   props: {},
   methods: {
     // アカウントの登録処理
-    onAccountRegister: function () {
+    onAccountRegister: async function () {
       var p = {
         email: this.register.id,
         password: this.register.password,
+        nickname: this.register.name,
       };
 
-      this.axios
+      await this.axios
         .post("http://localhost:3002/v1/auth", p)
         .then((response) => {
           // var payload = response.data;
 
-          var token = response.headers["access-token"];
+          var accessToken = response.headers["access-token"];
           var uid = response.headers["uid"];
           var client = response.headers["client"];
+          var expiry = response.headers["expiry"];
+          var tokenType = response.headers["token-type"];
+          var userId = response.data["id"];
 
-          this.$cookies.set("access-token", token, { expires: 5 });
+          this.$cookies.set("access-token", accessToken, { expires: 5 });
           this.$cookies.set("uid", uid, { expires: 5 });
           this.$cookies.set("client", client, { expires: 5 });
+          this.$cookies.set("expiry", expiry, { expires: 5 });
+          this.$cookies.set("token-type", tokenType, { expires: 5 });
+          this.$cookies.set("user_id", userId, { expires: 5 });
 
-          this.transitionTopPage();
+          this.axios.defaults.headers.common["X-CSRF-Token"] =
+            response.headers["x-csrf-token"];
+
+          console.log(response.data);
         })
         .catch((e) => {
           alert(e);
+          throw e;
         });
+
+      this.transitionTopPage();
     },
 
     transitionTopPage() {

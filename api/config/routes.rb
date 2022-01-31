@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :comments
   resources :likes
   resources :tweets
-  # resources :users
+  resources :users
   namespace :v1 do
     mount_devise_token_auth_for "User", at: "auth"
   end

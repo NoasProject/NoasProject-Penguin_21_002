@@ -28,6 +28,7 @@
 <script>
 export default {
   created() {
+    this.$cookies.remove("access-token");
     var token = this.$cookies.get("access-token");
     if (this.$cookies.isKey("access-token") && token != "undefined") {
       console.log("Tokenが存在するため、Tokenログインを行います");
@@ -39,8 +40,8 @@ export default {
   data() {
     return {
       login: {
-        email: "",
-        password: "",
+        email: "sample@xxx.com",
+        password: "01234567890",
         name: undefined,
         token: undefined,
       },
@@ -58,14 +59,23 @@ export default {
       this.axios
         .post("http://localhost:3002/v1/auth/sign_in", p)
         .then((response) => {
-          var token = response.headers["access-token"];
+          var accessToken = response.headers["access-token"];
           var uid = response.headers["uid"];
           var client = response.headers["client"];
+          var expiry = response.headers["expiry"];
+          var tokenType = response.headers["token-type"];
+          var userId = response.data.data["id"];
+          console.log(userId);
 
-          this.$cookies.set("access-token", token, { expires: 5 });
+          this.$cookies.set("access-token", accessToken, { expires: 5 });
           this.$cookies.set("uid", uid, { expires: 5 });
           this.$cookies.set("client", client, { expires: 5 });
+          this.$cookies.set("expiry", expiry, { expires: 5 });
+          this.$cookies.set("token-type", tokenType, { expires: 5 });
+          this.$cookies.set("user_id", userId, { expires: 5 });
 
+          this.axios.defaults.headers.common["X-CSRF-Token"] =
+            response.headers["x-csrf-token"];
           this.transitionTopPage();
         })
         .catch((e) => {

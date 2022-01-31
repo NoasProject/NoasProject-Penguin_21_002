@@ -86,4 +86,7 @@ rails g scaffold Comment tweet_id:integer user_id:integer comment:string
 https://qiita.com/tomokazu0112/items/5fdd6a51a84c520c45b5
 
 https://qiita.com/yokku21/items/5646214b0a0b6940c5bc
+
+https://ksss.ink/blog/posts/10-ruby-type
+# gem install steep
 ```

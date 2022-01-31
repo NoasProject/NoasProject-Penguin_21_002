@@ -4,7 +4,6 @@ import VueRouter from "vue-router";
 import Login from "./views/Login.vue"
 import Accountregister from "./views/Accountregister.vue"
 import Top from "./views/Top.vue"
-import Profile from "./views/Profile.vue"
 
 //
 // 他のコンポーネントは省略
@@ -31,12 +30,6 @@ const routes = [
         name: "top",
         component: Top,
     },
-    // プロフィール
-    {
-        path: "/profile",
-        name: "profile",
-        component: Profile,
-    }
 ];
 
 const router = new VueRouter(

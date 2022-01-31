@@ -1,8 +1,6 @@
 <template>
     <div>
-        <UserHeader 
-          :user="user"
-        >
+        <UserHeader >
         </UserHeader>
 
         <div class="container-fluid">
@@ -76,23 +74,8 @@ export default {
             name: "テスト1",
             description: "テスト1のプロフィールです",
           },
-          comments: [
-            {
-              id: 1,
-              user_id: 3,
-              comment: "comment2",
-            },
-          ],
-          likes: [
-            {
-              id: 1,
-              user_id: 2,
-            },
-            {
-              id: 2,
-              user_id: 3,
-            },
-          ],
+          comments: [],
+          likes: [],
         },
       ],
     };
@@ -104,23 +87,32 @@ export default {
       this.axios
         .post("http://localhost:3002/tweets", {
           content: this.input.content,
+
+          uid: this.$cookies.get("uid"),
+          "access-token": this.$cookies.get("access-token"),
+          client: this.$cookies.get("client"),
+          "token-type": this.$cookies.get("token-type"),
+
           headers: {
             uid: this.$cookies.get("uid"),
             "access-token": this.$cookies.get("access-token"),
             client: this.$cookies.get("client"),
+            expiry: this.$cookies.get("expiry"),
+            "token-type": this.$cookies.get("token-type"),
           },
         })
         .then((response) => {
           // var payload = response.data;
-          console.log(response.data);
+          // console.log(response.data);
+          var tweet = response.data;
+          {
+            tweet.likes = [];
+            tweet.comments = [];
+          }
+          this.tweets.push(tweet);
+          this.input.content = "";
 
-          var token = response.headers["access-token"];
-          var uid = response.headers["uid"];
-          var client = response.headers["client"];
-
-          this.$cookies.set("access-token", token, { expires: 5 });
-          this.$cookies.set("uid", uid, { expires: 5 });
-          this.$cookies.set("client", client, { expires: 5 });
+          this.cacheResponseHeader(response);
         })
         .catch((e) => {
           alert(e);
@@ -130,33 +122,21 @@ export default {
     // ツイートの取得を行う
     onGetTweets: async function () {
       var tweets = [];
-      var params = {
-        headers: {
-          uid: this.$cookies.get("uid"),
-          "access-token": this.$cookies.get("access-token"),
-          client: this.$cookies.get("client"),
-        },
-      };
-      console.log(params);
+
       await this.axios
         .get("http://localhost:3002/tweets", {
           headers: {
             uid: this.$cookies.get("uid"),
             "access-token": this.$cookies.get("access-token"),
             client: this.$cookies.get("client"),
+            expiry: this.$cookies.get("expiry"),
+            "token-type": this.$cookies.get("token-type"),
           },
         })
         .then((response) => {
           tweets = response.data;
           console.log(response.data);
-
-          var token = response.headers["access-token"];
-          var uid = response.headers["uid"];
-          var client = response.headers["client"];
-
-          this.$cookies.set("access-token", token, { expires: 5 });
-          this.$cookies.set("uid", uid, { expires: 5 });
-          this.$cookies.set("client", client, { expires: 5 });
+          this.cacheResponseHeader(response);
         })
         .catch((e) => {
           alert(e);
@@ -164,10 +144,9 @@ export default {
 
       var tweetUseIds = tweets.map((tweet) => tweet.user_id);
       var tweetIds = tweets.map((tweet) => tweet.id);
-
       // User一覧
       await this.axios
-        .get("http://localhost:3002/user_profiles", {
+        .get("http://localhost:3002/users", {
           params: {
             user_ids: tweetUseIds,
           },
@@ -175,21 +154,16 @@ export default {
             uid: this.$cookies.get("uid"),
             "access-token": this.$cookies.get("access-token"),
             client: this.$cookies.get("client"),
+            expiry: this.$cookies.get("expiry"),
+            "token-type": this.$cookies.get("token-type"),
           },
         })
         .then((response) => {
-          var profiles = response.data;
+          var users = response.data;
 
-          var token = response.headers["access-token"];
-          var uid = response.headers["uid"];
-          var client = response.headers["client"];
-
-          this.$cookies.set("access-token", token, { expires: 5 });
-          this.$cookies.set("uid", uid, { expires: 5 });
-          this.$cookies.set("client", client, { expires: 5 });
-
+          this.cacheResponseHeader(response);
           tweets.map((tweet) => {
-            tweet.profile = profiles.find((f) => f.id == tweet.user_id);
+            tweet.user = users.find((f) => f.id == tweet.user_id);
           });
         })
         .catch((e) => {
@@ -205,18 +179,14 @@ export default {
               uid: this.$cookies.get("uid"),
               "access-token": this.$cookies.get("access-token"),
               client: this.$cookies.get("client"),
+              expiry: this.$cookies.get("expiry"),
+              "token-type": this.$cookies.get("token-type"),
             },
           })
           .then((response) => {
             var comments = response.data;
 
-            var token = response.headers["access-token"];
-            var uid = response.headers["uid"];
-            var client = response.headers["client"];
-
-            this.$cookies.set("access-token", token, { expires: 5 });
-            this.$cookies.set("uid", uid, { expires: 5 });
-            this.$cookies.set("client", client, { expires: 5 });
+            this.cacheResponseHeader(response);
 
             tweets.map((tweet) => {
               tweet.comments = comments.filter((f) => f.tweet_id == tweet.id);
@@ -234,18 +204,16 @@ export default {
               uid: this.$cookies.get("uid"),
               "access-token": this.$cookies.get("access-token"),
               client: this.$cookies.get("client"),
+              expiry: this.$cookies.get("expiry"),
+              "token-type": this.$cookies.get("token-type"),
             },
           })
           .then((response) => {
             var likes = response.data;
 
-            var token = response.headers["access-token"];
-            var uid = response.headers["uid"];
-            var client = response.headers["client"];
-
-            this.$cookies.set("access-token", token, { expires: 5 });
-            this.$cookies.set("uid", uid, { expires: 5 });
-            this.$cookies.set("client", client, { expires: 5 });
+            console.log("Likes Get.");
+            console.log(likes);
+            this.cacheResponseHeader(response);
 
             tweets.map((tweet) => {
               tweet.likes = likes.filter((f) => f.tweet_id == tweet.id);
@@ -257,6 +225,23 @@ export default {
       }
 
       this.tweets = tweets;
+    },
+
+    cacheResponseHeader: function (response) {
+      var accessToken = response.headers["access-token"];
+      var uid = response.headers["uid"];
+      var client = response.headers["client"];
+      var expiry = response.headers["expiry"];
+      var tokenType = response.headers["token-type"];
+
+      this.$cookies.set("access-token", accessToken, { expires: 5 });
+      this.$cookies.set("uid", uid, { expires: 5 });
+      this.$cookies.set("client", client, { expires: 5 });
+      this.$cookies.set("expiry", expiry, { expires: 5 });
+      this.$cookies.set("token-type", tokenType, { expires: 5 });
+
+      this.axios.defaults.headers.common["X-CSRF-Token"] =
+        response.headers["x-csrf-token"];
     },
 
     transitionRoot: function () {
